@@ -9,7 +9,7 @@ import config
 
 
 PORT = 2001
-SERVER = '192.168.200.100'
+SERVER = '192.168.200.79'
 ADDR = (SERVER, PORT)
 
 
@@ -41,6 +41,11 @@ def handle_client(conn, addr):
                     send_email("Alarm on BASEMENT DOOR")
                 elif "HALLWAY MOTION" in stringdata:
                     send_email("Alarm on HALLWAY MOTION")
+            elif  "Zs" in stringdata:
+                if "t 008" in stringdata:
+                    send_email("WARNING: AC power failure")
+                elif "t 000" in stringdata:
+                    send_email("AC power restored")
             conn.sendall(message)
             conn.close()
         except socket.error:
