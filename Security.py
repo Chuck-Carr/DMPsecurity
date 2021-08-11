@@ -46,6 +46,8 @@ def handle_client(conn, addr):
                     send_email("WARNING: AC power failure")
                 elif "t 000" in stringdata:
                     send_email("AC power restored")
+                elif "t 007" in stringdata:
+                    send_email("Test Timer")
             conn.sendall(message)
             conn.close()
         except socket.error:
