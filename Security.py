@@ -23,6 +23,7 @@ def handle_client(conn, addr):
             message = conn.recv(1024)
             print(f"[{addr}] {message}")
             stringdata = message.decode('ASCII')
+            ### Opening message in ASCII  b'\x02FE21   6406 Zq\\062\\t "OP\\u 00005"CHUCK           \\a 001"PERIMETER       \\\r' ###
             log(stringdata)
             ### Determines what events will be sent via email/text ###
             if "OP" in stringdata:
