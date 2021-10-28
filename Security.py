@@ -1,31 +1,30 @@
 import socket
 import threading
-import smtplib, ssl
+import smtplib
 from email.message import EmailMessage
-import os
 import datetime
 import config
 
 
-
+### Ip Address and Port used by the server that will be monitoring the DMP system. ###
 PORT = 2001
 SERVER = '192.168.200.79'
 ADDR = (SERVER, PORT)
 
-
+### Open port used by DMP system to monitor traffic ###
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
+### This client will handle all incoming traffic on the DMP port ###
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
-
-
     while True:
         try:
             message = conn.recv(1024)
             print(f"[{addr}] {message}")
             stringdata = message.decode('ASCII')
             log(stringdata)
+            ### Determines what events will be sent via email/text ###
             if "OP" in stringdata:
                 send_email("System Disarmed")
             elif "CL" in stringdata:
@@ -51,13 +50,14 @@ def handle_client(conn, addr):
         except socket.error:
             break
 
-
+### Saves all traffic to a log file. ###
 def log(message):
     with open('log.txt', 'a') as file:
         time = datetime.datetime.now()
         file.write(f"{message}-{time}\n")
         file.close()
 
+### Sends an email/text of traffic selected in the client. ###
 def send_email(message):
     smtp_server = "smtp.gmail.com"
     port = 465
@@ -74,7 +74,7 @@ def send_email(message):
         smtp.login(sender_email, password)
         smtp.send_message(msg)
 
-
+### Starts the listening server on selected port. ###
 def start():
     server.listen()
     print(f"[LISTENING] Server is listening on {SERVER}")
@@ -87,4 +87,5 @@ def start():
 
 
 print("[STARTING] Server is starting")
+### Starts app ###
 start()
