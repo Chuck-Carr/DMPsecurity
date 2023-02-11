@@ -10,8 +10,6 @@ import config
 PORT = 2001
 SERVER = '192.168.200.79'
 ADDR = (SERVER, PORT)
-
-### Open port used by DMP system to monitor traffic ###
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
@@ -26,10 +24,11 @@ def handle_client(conn, addr):
             ### Opening message in ASCII  b'\x02FE21   6406 Zq\\062\\t "OP\\u 00005"CHUCK           \\a 001"PERIMETER       \\\r' ###
             log(stringdata)
             ### Determines what events will be sent via email/text ###
-            if "OP" in stringdata:
-                send_email("System Disarmed")
-            elif "CL" in stringdata:
-                send_email("System Armed")
+            if "Zq" in stringdata:
+                if "OP" in stringdata:
+                    send_email("System Disarmed")
+                elif "CL" in stringdata:
+                    send_email("System Armed")
             elif "Za" in stringdata:
                 if "FRONT DOOR" in stringdata:
                     send_email("Alarm on FRONT DOOR")
